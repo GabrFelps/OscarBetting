@@ -224,12 +224,10 @@ async function loadCategories() {
   } catch (err) {
     console.error(err);
     const container = document.getElementById('active-category-container');
-    if (container) {
-      container.innerHTML =
-        `<div class="text-red-400 text-center p-8 bg-red-900/20 rounded-lg border border-red-900/50">
+    container.innerHTML =
+      `<div class="text-red-400 text-center p-8 bg-red-900/20 rounded-lg border border-red-900/50">
                 Erro ao carregar dados: ${err.message}
             </div>`;
-    }
   }
 }
 
@@ -281,7 +279,7 @@ function renderCategoryTabs() {
     btn.innerHTML = `
             ${isVoted ? '<i data-lucide="check" class="w-3 h-3"></i>' : ''}
             ${cat.name}
-        `;
+      `;
     btn.onclick = () => {
       activeCategoryIndex = index;
       renderCategoryTabs();
@@ -305,15 +303,15 @@ function renderActiveCategory() {
   const votedId = globalUserBets[cat.id];
 
   let html = `
-        <div class="mb-8 text-center animate-fade-in">
+        < div class="mb-8 text-center animate-fade-in" >
             <h2 class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-yellow-500 to-yellow-200 mb-2 drop-shadow-sm tracking-tight">
                 ${cat.name}
             </h2>
             <p class="text-gray-400 text-xs uppercase tracking-widest font-semibold">Selecione o vencedor</p>
-        </div>
-        
+        </div >
+
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 p-1">
-    `;
+          `;
 
   cat.nominees.forEach(nom => {
     const isSelected = votedId === nom.id;
@@ -322,14 +320,14 @@ function renderActiveCategory() {
     const imageDisplay = nom.display_image || 'https://via.placeholder.com/300x450?text=No+Image';
 
     html += `
-            <div onclick="placeBet(${cat.id}, ${nom.id}, this)" 
-                 class="group cursor-pointer relative rounded-xl overflow-hidden transition-all duration-300 transform hover:-translate-y-1 ${borderClass} ${bgClass}"
-            >
-                <div class="aspect-[2/3] w-full relative overflow-hidden">
-                    <img src="${imageDisplay}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
-                    <div class="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent"></div>
-                    
-                    ${isSelected ? `
+          <div onclick="placeBet(${cat.id}, ${nom.id}, this)"
+            class="group cursor-pointer relative rounded-xl overflow-hidden transition-all duration-300 transform hover:-translate-y-1 ${borderClass} ${bgClass}"
+          >
+            <div class="aspect-[2/3] w-full relative overflow-hidden">
+              <img src="${imageDisplay}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110">
+                <div class="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent"></div>
+
+                ${isSelected ? `
                         <div class="absolute top-2 right-2 bg-gold text-slate-900 rounded-full p-1 shadow-lg z-10 animate-bounce-short">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                         </div>
@@ -337,15 +335,15 @@ function renderActiveCategory() {
                             Selecionado
                         </div>
                     ` : ''}
-                </div>
-
-                <div class="p-4 relative mt-auto">
-                    <h4 class="font-bold text-white text-sm leading-snug mb-1 group-hover:text-gold transition-colors text-shadow-sm">${nom.movie ? nom.movie.title : nom.person_name}</h4>
-                    ${nom.person_name && nom.movie ? `<p class="text-xs text-gray-400 truncate">${nom.person_name}</p>` : ''}
-                    ${nom.secondary_text ? `<p class="text-xs text-yellow-500/80 mt-1 font-medium truncate">${nom.secondary_text}</p>` : ''}
-                </div>
             </div>
-        `;
+
+            <div class="p-4 relative mt-auto">
+              <h4 class="font-bold text-white text-sm leading-snug mb-1 group-hover:text-gold transition-colors text-shadow-sm">${nom.movie ? nom.movie.title : nom.person_name}</h4>
+              ${nom.person_name && nom.movie ? `<p class="text-xs text-gray-400 truncate">${nom.person_name}</p>` : ''}
+              ${nom.secondary_text ? `<p class="text-xs text-yellow-500/80 mt-1 font-medium truncate">${nom.secondary_text}</p>` : ''}
+            </div>
+          </div>
+          `;
   });
 
   html += `</div>`;
