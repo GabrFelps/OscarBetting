@@ -140,14 +140,28 @@ function showSection(sectionId) {
 }
 
 function highlightNav(text) {
-  const navLinks = document.querySelectorAll('#navbar a');
-  navLinks.forEach(link => {
-    if (link.textContent.trim() === text) {
-      link.classList.add('text-gold', 'font-bold');
-      link.classList.remove('text-gray-300');
-    } else if (text !== '') {
-      link.classList.remove('text-gold', 'font-bold');
-      link.classList.add('text-gray-300');
+  // Desktop Nav
+  const navButtons = document.querySelectorAll('#navbar button');
+  navButtons.forEach(btn => {
+    if (btn.textContent.trim() === text) {
+      btn.classList.add('bg-white/10', 'text-white');
+      btn.classList.remove('text-gray-300');
+    } else if (['Dashboard', 'Apostar', 'Ranking'].includes(btn.textContent.trim())) {
+      btn.classList.remove('bg-white/10', 'text-white');
+      btn.classList.add('text-gray-300');
+    }
+  });
+
+  // Mobile Nav (if exists)
+  const mobileNavButtons = document.querySelectorAll('#mobile-nav button');
+  mobileNavButtons.forEach(btn => {
+    const span = btn.querySelector('span'); // Assuming icon + span structure
+    if (span && span.textContent.trim() === text) {
+      btn.classList.add('text-gold');
+      btn.classList.remove('text-gray-500');
+    } else if (span) {
+      btn.classList.remove('text-gold');
+      btn.classList.add('text-gray-500');
     }
   });
 }

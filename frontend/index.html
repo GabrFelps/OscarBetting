@@ -103,6 +103,29 @@
     </div>
   </nav>
 
+  <!-- Mobile Bottom Nav -->
+  <div id="mobile-nav"
+    class="md:hidden fixed bottom-0 w-full z-50 glass border-t border-white/5 pb-safe pt-2 px-6 flex justify-between items-center safe-area-bottom">
+    <button onclick="showSection('dashboard-screen')"
+      class="flex flex-col items-center gap-1 p-2 text-gray-500 transition">
+      <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+      <span class="text-[10px] font-bold uppercase tracking-wide">Dashboard</span>
+    </button>
+    <button onclick="showSection('voting-screen')"
+      class="flex flex-col items-center gap-1 p-2 text-gray-500 transition">
+      <div
+        class="w-10 h-10 bg-gold/10 rounded-full flex items-center justify-center -mt-6 border border-gold/20 shadow-lg shadow-gold/10">
+        <i data-lucide="play" class="w-5 h-5 text-gold fill-gold"></i>
+      </div>
+      <span class="text-[10px] font-bold uppercase tracking-wide text-gold">Apostar</span>
+    </button>
+    <button onclick="showSection('leaderboard-screen')"
+      class="flex flex-col items-center gap-1 p-2 text-gray-500 transition">
+      <i data-lucide="trophy" class="w-5 h-5"></i>
+      <span class="text-[10px] font-bold uppercase tracking-wide">Ranking</span>
+    </button>
+  </div>
+
   <!-- Main Content -->
   <main class="flex-grow container mx-auto px-4 pt-24 pb-20 relative">
 
