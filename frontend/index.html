@@ -65,17 +65,21 @@
   </style>
 </head>
 
-<body class="bg-slate-950 text-gray-100 min-h-screen flex flex-col selection:bg-gold selection:text-slate-900">
+<body
+  class="bg-slate-950 text-gray-100 min-h-screen flex flex-col selection:bg-gold selection:text-slate-900 pb-20 md:pb-0">
 
-  <!-- Navbar -->
-  <nav id="navbar" class="hidden fixed top-0 w-full z-50 glass border-b border-white/5 transition-all duration-300">
+  <!-- Navbar (Fixed Top) - Mobile: Transparent/Solid blend fix -->
+  <nav id="navbar"
+    class="hidden fixed top-0 w-full z-50 bg-slate-950/90 backdrop-blur-md border-b border-white/5 transition-all duration-300">
     <div class="container mx-auto px-4 md:px-6 py-4 flex justify-between items-center">
       <div class="flex items-center gap-2 cursor-pointer group" onclick="showSection('dashboard-screen')">
         <div class="relative">
-          <i data-lucide="trophy" class="text-gold w-6 h-6 group-hover:scale-110 transition duration-300"></i>
-          <div class="absolute inset-0 bg-gold blur-lg opacity-20"></div>
+          <img src="assets/oscar-icon.png" alt="Oscar Icon"
+            class="w-8 h-auto group-hover:scale-110 transition duration-300 drop-shadow-[0_0_8px_rgba(212,175,55,0.6)]">
+          <!-- <div class="absolute inset-0 bg-gold blur-lg opacity-20"></div> -->
         </div>
-        <span class="text-xl font-bold tracking-wider text-white">OSCAR<span class="text-gold">BET</span></span>
+        <span class="text-xl font-bold tracking-wider text-white select-none">OSCAR<span
+            class="text-gold">BET</span></span>
       </div>
 
       <div class="hidden md:flex items-center gap-1 bg-white/5 p-1 rounded-full border border-white/5">
