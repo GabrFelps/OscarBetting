@@ -174,6 +174,13 @@ function highlightNav(text) {
 
 async function loadCategories() {
   const token = localStorage.getItem('token');
+  const activeContainer = document.getElementById('active-category-container');
+
+  // Show Skeleton / Loading State
+  if (activeContainer && globalCategories.length === 0) {
+    activeContainer.innerHTML = '<div class="flex items-center justify-center h-64"><div class="w-12 h-12 border-4 border-gold border-t-transparent rounded-full animate-spin"></div></div>';
+  }
+
   try {
     const [catRes, betRes] = await Promise.all([
       fetch(`${API_URL}/api/categories/`, { headers: { 'Authorization': `Token ${token}` } }),
@@ -191,11 +198,26 @@ async function loadCategories() {
     }
 
     renderCategoryTabs();
-    renderActiveCategory();
-    updateProgress(globalCategories.length, Object.keys(globalUserBets).length);
 
-    // Check if fully completed
-    checkVotingCompletion();
+    // Check completion BEFORE rendering active category to prevent flash
+    const total = globalCategories.length;
+    const voted = Object.keys(globalUserBets).length;
+
+    // Logic extracted from checkVotingCompletion to run inline
+    const completedContainer = document.getElementById('voting-completed-container');
+    const defaultContainer = document.getElementById('voting-default-container');
+
+    // Ensure we unhide the container if we are going to show it
+    if (total > 0 && voted === total && !isEditing) {
+      completedContainer.classList.remove('hidden');
+      defaultContainer.classList.add('hidden');
+    } else {
+      completedContainer.classList.add('hidden');
+      defaultContainer.classList.remove('hidden');
+      renderActiveCategory();
+    }
+
+    updateProgress(total, voted);
 
   } catch (err) {
     console.error(err);
@@ -472,10 +494,12 @@ function loadSummary() {
 
 async function loadLeaderboard() {
   const token = localStorage.getItem('token');
+  const tbody = document.getElementById('leaderboard-body');
+  if (tbody) tbody.innerHTML = '<tr><td colspan="3" class="p-8 text-center"><div class="inline-block w-8 h-8 border-4 border-gold border-t-transparent rounded-full animate-spin"></div></td></tr>';
+
   const res = await fetch(`${API_URL}/api/leaderboard/`, { headers: { 'Authorization': `Token ${token}` } });
   const data = await res.json();
 
-  const tbody = document.getElementById('leaderboard-body');
   const podiumContainer = document.getElementById('podium-container');
 
   tbody.innerHTML = '';
