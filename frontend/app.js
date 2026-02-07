@@ -124,6 +124,7 @@ function showSection(sectionId) {
   document.getElementById(sectionId).classList.remove('hidden');
 
   if (sectionId === 'voting-screen') {
+    isEditing = false; // Reset editing state
     loadCategories(); // Reload to update button states if re-entering
     highlightNav('Apostar');
   }
@@ -193,6 +194,9 @@ async function loadCategories() {
     renderActiveCategory();
     updateProgress(globalCategories.length, Object.keys(globalUserBets).length);
 
+    // Check if fully completed
+    checkVotingCompletion();
+
   } catch (err) {
     console.error(err);
     const container = document.getElementById('active-category-container');
@@ -203,6 +207,30 @@ async function loadCategories() {
             </div>`;
     }
   }
+}
+
+let isEditing = false;
+
+function checkVotingCompletion() {
+  const total = globalCategories.length;
+  const voted = Object.keys(globalUserBets).length;
+
+  const completedContainer = document.getElementById('voting-completed-container');
+  const defaultContainer = document.getElementById('voting-default-container');
+
+  if (total > 0 && voted === total && !isEditing) {
+    completedContainer.classList.remove('hidden');
+    defaultContainer.classList.add('hidden');
+  } else {
+    completedContainer.classList.add('hidden');
+    defaultContainer.classList.remove('hidden');
+  }
+  lucide.createIcons();
+}
+
+function enableEditing() {
+  isEditing = true;
+  checkVotingCompletion();
 }
 
 function renderCategoryTabs() {
