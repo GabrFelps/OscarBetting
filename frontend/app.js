@@ -178,6 +178,8 @@ async function loadCategories() {
 
   // Show Skeleton / Loading State
   if (activeContainer && globalCategories.length === 0) {
+    document.getElementById('voting-default-container').classList.remove('hidden'); // Fix: Ensure container is visible for skeleton
+    document.getElementById('voting-completed-container').classList.add('hidden');
     activeContainer.innerHTML = '<div class="flex items-center justify-center h-64"><div class="w-12 h-12 border-4 border-gold border-t-transparent rounded-full animate-spin"></div></div>';
   }
 
