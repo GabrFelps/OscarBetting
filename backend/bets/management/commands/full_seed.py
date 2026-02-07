@@ -141,6 +141,7 @@ class Command(BaseCommand):
                 {"movie": "Jurassic World: Recomeço"}, {"movie": "O Ônibus Perdido"}, 
                 {"movie": "Pecadores"}
             ]
+        }
         # Safe Seed - Idempotent
         self.stdout.write("Starting safe seed (checking for missing data)...")
         # Category.objects.all().delete() # DANGEROUS IN PROD - REMOVED
