@@ -1,14 +1,27 @@
-from django.core.management.base import BaseCommand
-from bets.models import Category, Nominee, Movie
-import time
+from django.utils.text import slugify
 
 class Command(BaseCommand):
     help = 'Populates the database with all 24 Oscar categories and nominees'
 
     def handle(self, *args, **options):
-        self.stdout.write("Starting full seed...")
-
-        # Data Structure
+        # ... (rest of the file) ...
+        
+        # Populate
+        for cat_name, nominees in data.items():
+            cat_slug = slugify(cat_name)
+            category, created = Category.objects.get_or_create(
+                slug=cat_slug, 
+                defaults={'name': cat_name}
+            )
+            
+            # If it existed but name is different (unlikely with slugify), update it? No, just ensure name matches if needed.
+            if created:
+                self.stdout.write(self.style.SUCCESS(f"Created category: {cat_name}"))
+            else:
+                self.stdout.write(f"Category already exists: {cat_name}")
+                if category.name != cat_name:
+                    category.name = cat_name
+                    category.save()
         data = {
             "Melhor Filme": [
                 {"movie": "Bugonia"}, {"movie": "F1"}, {"movie": "Frankenstein"}, {"movie": "Hamnet"}, 
@@ -148,11 +161,19 @@ class Command(BaseCommand):
         
         # Populate
         for cat_name, nominees in data.items():
-            category, created = Category.objects.get_or_create(name=cat_name)
+            cat_slug = slugify(cat_name)
+            category, created = Category.objects.get_or_create(
+                slug=cat_slug,
+                defaults={'name': cat_name, 'order': 0}
+            )
+            
             if created:
                 self.stdout.write(self.style.SUCCESS(f"Created category: {cat_name}"))
             else:
                 self.stdout.write(f"Category already exists: {cat_name}")
+                if category.name != cat_name:
+                    category.name = cat_name
+                    category.save()
             
             for nom_data in nominees:
                 movie = None
