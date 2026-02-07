@@ -6,7 +6,11 @@ class Command(BaseCommand):
     help = 'Populates the database with all 24 Oscar categories and nominees'
 
     def handle(self, *args, **options):
-        self.stdout.write("Starting safe seed (checking for missing data)...")
+        # safe seed (Clean Slate)
+        self.stdout.write("Wiping old data to fix duplicates...")
+        Category.objects.all().delete()
+        Movie.objects.all().delete()
+        self.stdout.write("Starting seed...")
 
         # Data Structure
         data = {
