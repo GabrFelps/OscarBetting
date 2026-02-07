@@ -1,3 +1,5 @@
+from django.core.management.base import BaseCommand
+from bets.models import Category, Nominee, Movie
 from django.utils.text import slugify
 
 class Command(BaseCommand):
