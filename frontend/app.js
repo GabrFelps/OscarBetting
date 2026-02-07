@@ -307,6 +307,29 @@ function renderActiveCategory() {
   if (prevBtn) prevBtn.disabled = activeCategoryIndex === 0;
   if (nextBtn) nextBtn.disabled = activeCategoryIndex === globalCategories.length - 1;
   if (counter) counter.textContent = `${activeCategoryIndex + 1} / ${globalCategories.length}`;
+
+  updateNextButtonVisuals();
+}
+
+function updateNextButtonVisuals() {
+  const btnNext = document.getElementById('btn-next-cat');
+  if (!btnNext) return;
+
+  // Force reset classes
+  btnNext.className = "pointer-events-auto shadow-2xl p-4 rounded-full border transition disabled:opacity-0 disabled:translate-y-10 transform hover:scale-110 flex items-center justify-center gap-2";
+
+  if (activeCategoryIndex === globalCategories.length - 1) {
+    // Last Slide: Finalize
+    btnNext.innerHTML = `<span class="hidden md:inline font-bold pr-2">Finalizar</span> <i data-lucide="check-circle" class="w-6 h-6"></i>`;
+    btnNext.classList.add('bg-green-500', 'hover:bg-green-600', 'text-white', 'border-green-400');
+    // IMPORTANT: Re-enable button if it was disabled by renderActiveCategory logic (technically it shouldn't be disabled if we want to click it to finish)
+    btnNext.disabled = false;
+  } else {
+    // Normal Slide: Next
+    btnNext.innerHTML = `<i data-lucide="arrow-right" class="w-6 h-6"></i>`;
+    btnNext.classList.add('bg-gold', 'hover:bg-yellow-400', 'text-slate-950', 'border-gold/50');
+  }
+  lucide.createIcons();
 }
 
 function prevCategory() {
@@ -348,21 +371,7 @@ async function placeBet(catId, nomId, element) {
 
 function updateProgress(total, voted) {
   const el = document.getElementById('vote-progress');
-  const btnNext = document.getElementById('btn-next-cat');
   if (el) el.textContent = `${voted}/${total}`;
-
-  // Update Next Button Text on Last Slide
-  if (btnNext) {
-    if (activeCategoryIndex === globalCategories.length - 1) {
-      btnNext.innerHTML = `Finalizar <i data-lucide="check-circle" class="w-4 h-4"></i>`;
-      btnNext.classList.remove('bg-gold', 'text-slate-950', 'hover:bg-yellow-400');
-      btnNext.classList.add('bg-green-500', 'text-white', 'hover:bg-green-600');
-    } else {
-      btnNext.innerHTML = `Próxima <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
-      btnNext.classList.add('bg-gold', 'text-slate-950', 'hover:bg-yellow-400');
-      btnNext.classList.remove('bg-green-500', 'text-white', 'hover:bg-green-600');
-    }
-  }
 }
 
 // ---------------- SUMMARY SCREEN ----------------
