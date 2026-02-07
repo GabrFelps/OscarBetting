@@ -132,6 +132,9 @@ async function loadCategories() {
       fetch(`${API_URL}/api/bets/`, { headers: { 'Authorization': `Token ${token}` } })
     ]);
 
+    if (!catRes.ok) throw new Error(`Categories error: ${catRes.status}`);
+    if (!betRes.ok) throw new Error(`Bets error: ${betRes.status}`);
+
     const categories = await catRes.json();
     const bets = await betRes.json();
     const userBets = {};
@@ -139,7 +142,14 @@ async function loadCategories() {
 
     renderCategories(categories, userBets);
     updateProgress(categories.length, Object.keys(userBets).length);
-  } catch (err) { console.error(err); }
+  } catch (err) {
+    console.error(err);
+    const container = document.getElementById('categories-container');
+    container.innerHTML = `<div class="p-4 bg-red-900/50 text-red-200 rounded border border-red-500">
+            Erro ao carregar dados: ${err.message}.<br>
+            Tente fazer logout e login novamente.
+        </div>`;
+  }
 }
 
 function renderCategories(categories, userBets) {
