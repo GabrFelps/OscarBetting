@@ -307,6 +307,62 @@
       </div>
     </section>
 
+    <!-- SUCCESS SCREEN -->
+    <section id="success-screen"
+      class="hidden animate-fade-in flex flex-col items-center justify-center min-h-[70vh] text-center max-w-2xl mx-auto">
+      <div class="mb-8 relative">
+        <div class="absolute inset-0 bg-gold blur-[60px] opacity-20 rounded-full animate-pulse"></div>
+        <i data-lucide="trophy"
+          class="w-24 h-24 text-gold relative z-10 drop-shadow-[0_0_15px_rgba(212,175,55,0.5)]"></i>
+      </div>
+      <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 font-display">Palpites Enviados<br>com Sucesso!</h2>
+      <p class="text-gray-400 text-lg mb-10 max-w-md mx-auto">Sua cartela foi registrada. Agora é só preparar a pipoca e
+        torcer pelos seus favoritos na grande noite!</p>
+
+      <div class="flex flex-col sm:flex-row gap-4 w-full max-w-sm">
+        <button onclick="showSection('summary-screen')"
+          class="flex-1 px-8 py-4 bg-gold text-slate-950 font-bold rounded-xl hover:bg-yellow-400 transition shadow-lg shadow-gold/20 flex justify-center items-center gap-2">
+          Visualizar Meu Resumo <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </button>
+        <button onclick="showSection('dashboard-screen')"
+          class="flex-1 px-8 py-4 bg-slate-800 text-white font-bold rounded-xl hover:bg-slate-700 transition border border-white/10">
+          Voltar para a Home
+        </button>
+      </div>
+    </section>
+
+    <!-- SUMMARY SCREEN -->
+    <section id="summary-screen" class="hidden animate-fade-in max-w-4xl mx-auto space-y-8">
+      <div class="text-center mb-8">
+        <span class="text-gold text-xs font-bold tracking-widest uppercase">Official Ballot</span>
+        <h2 class="text-4xl font-bold text-white font-display mt-2">Minhas Apostas</h2>
+        <div class="flex justify-center gap-4 mt-6">
+          <div class="bg-slate-900 border border-white/10 px-6 py-3 rounded-lg">
+            <span class="block text-2xl font-bold text-white" id="summary-total">24</span>
+            <span class="text-xs text-gray-400 uppercase tracking-wider font-bold">Total</span>
+          </div>
+          <div class="bg-slate-900 border border-white/10 px-6 py-3 rounded-lg">
+            <span class="block text-2xl font-bold text-yellow-500" id="summary-pending">24</span>
+            <span class="text-xs text-gray-400 uppercase tracking-wider font-bold">Pendentes</span>
+          </div>
+          <div class="bg-slate-900 border border-white/10 px-6 py-3 rounded-lg">
+            <span class="block text-2xl font-bold text-green-500" id="summary-correct">0</span>
+            <span class="text-xs text-gray-400 uppercase tracking-wider font-bold">Acertos</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="summary-list" class="space-y-4">
+        <!-- JS injects summary cards here -->
+      </div>
+
+      <div class="text-center pt-8">
+        <button onclick="showSection('dashboard-screen')"
+          class="text-gray-400 hover:text-white transition underline decoration-gray-600 underline-offset-4">Voltar ao
+          Dashboard</button>
+      </div>
+    </section>
+
     <!-- LEADERBOARD SCREEN (PODIUM) -->
     <section id="leaderboard-screen" class="hidden animate-fade-in max-w-5xl mx-auto space-y-12">
       <div class="text-center">

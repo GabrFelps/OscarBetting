@@ -114,7 +114,7 @@ function logout() {
 
 function showSection(sectionId) {
   // Hide all
-  ['dashboard-screen', 'voting-screen', 'leaderboard-screen', 'admin-screen'].forEach(id => {
+  ['dashboard-screen', 'voting-screen', 'leaderboard-screen', 'admin-screen', 'success-screen', 'summary-screen'].forEach(id => {
     document.getElementById(id).classList.add('hidden');
   });
 
@@ -124,7 +124,7 @@ function showSection(sectionId) {
   document.getElementById(sectionId).classList.remove('hidden');
 
   if (sectionId === 'voting-screen') {
-    loadCategories();
+    loadCategories(); // Reload to update button states if re-entering
     highlightNav('Apostar');
   }
   if (sectionId === 'leaderboard-screen') {
@@ -133,6 +133,9 @@ function showSection(sectionId) {
   }
   if (sectionId === 'dashboard-screen') {
     highlightNav('Dashboard');
+  }
+  if (sectionId === 'summary-screen') {
+    loadSummary();
   }
   if (sectionId === 'admin-screen') loadAdmin();
 
@@ -319,6 +322,9 @@ function nextCategory() {
     activeCategoryIndex++;
     renderCategoryTabs();
     renderActiveCategory();
+  } else {
+    // Last category: Finish
+    showSection('success-screen');
   }
 }
 
@@ -342,7 +348,87 @@ async function placeBet(catId, nomId, element) {
 
 function updateProgress(total, voted) {
   const el = document.getElementById('vote-progress');
+  const btnNext = document.getElementById('btn-next-cat');
   if (el) el.textContent = `${voted}/${total}`;
+
+  // Update Next Button Text on Last Slide
+  if (btnNext) {
+    if (activeCategoryIndex === globalCategories.length - 1) {
+      btnNext.innerHTML = `Finalizar <i data-lucide="check-circle" class="w-4 h-4"></i>`;
+      btnNext.classList.remove('bg-gold', 'text-slate-950', 'hover:bg-yellow-400');
+      btnNext.classList.add('bg-green-500', 'text-white', 'hover:bg-green-600');
+    } else {
+      btnNext.innerHTML = `Próxima <i data-lucide="arrow-right" class="w-4 h-4"></i>`;
+      btnNext.classList.add('bg-gold', 'text-slate-950', 'hover:bg-yellow-400');
+      btnNext.classList.remove('bg-green-500', 'text-white', 'hover:bg-green-600');
+    }
+  }
+}
+
+// ---------------- SUMMARY SCREEN ----------------
+
+function loadSummary() {
+  const container = document.getElementById('summary-list');
+  container.innerHTML = '';
+
+  let total = globalCategories.length;
+  let pending = 0;
+  let correct = 0;
+
+  globalCategories.forEach(cat => {
+    const betNomId = globalUserBets[cat.id];
+    // Find the nominee object user bet on
+    const userNominee = cat.nominees.find(n => n.id === betNomId);
+    // Find the actual winner
+    const winnerNominee = cat.nominees.find(n => n.is_winner); // Assumes is_winner populated in /categories/
+
+    let statusHtml = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-slate-800 text-gray-400 border border-white/10 uppercase tracking-wider"><i data-lucide="clock" class="w-3 h-3 inline mr-1"></i> Pendente</span>';
+    let borderColor = 'border-white/5';
+
+    if (!userNominee) {
+      // No bet placed
+      // statusHtml = '<span class="text-red-500">Não apostou</span>';
+      pending++; // Count as pending or missed?
+    } else {
+      // Logic: Check if there is a winner defined
+      if (winnerNominee) {
+        if (winnerNominee.id === userNominee.id) {
+          statusHtml = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-green-500/20 text-green-400 border border-green-500/30 uppercase tracking-wider"><i data-lucide="check" class="w-3 h-3 inline mr-1"></i> Acertou</span>';
+          borderColor = 'border-green-500/30';
+          correct++;
+        } else {
+          statusHtml = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-red-500/20 text-red-400 border border-red-500/30 uppercase tracking-wider"><i data-lucide="x" class="w-3 h-3 inline mr-1"></i> Errou</span>';
+          borderColor = 'border-red-500/30';
+        }
+      } else {
+        pending++;
+      }
+    }
+
+    const image = userNominee ? (userNominee.display_image || 'https://via.placeholder.com/50') : 'https://via.placeholder.com/50?text=?';
+    const title = userNominee ? (userNominee.movie ? userNominee.movie.title : userNominee.person_name) : 'Nenhum palpite';
+    const secText = userNominee ? (userNominee.person_name && userNominee.movie ? userNominee.person_name : userNominee.secondary_text || '') : '';
+
+    container.innerHTML += `
+            <div class="flex items-center gap-4 bg-slate-900 p-4 rounded-xl border ${borderColor} transition hover:bg-slate-800/50">
+                <img src="${image}" class="w-12 h-16 object-cover rounded shadow-md bg-slate-800">
+                <div class="flex-grow">
+                    <span class="text-xs text-gold font-bold uppercase tracking-wide block mb-1">${cat.name}</span>
+                    <h3 class="text-white font-bold text-lg leading-tight">${title}</h3>
+                    <p class="text-gray-400 text-xs">${secText}</p>
+                </div>
+                <div>
+                    ${statusHtml}
+                </div>
+            </div>
+        `;
+  });
+
+  document.getElementById('summary-total').textContent = total;
+  document.getElementById('summary-pending').textContent = pending;
+  document.getElementById('summary-correct').textContent = correct;
+
+  lucide.createIcons();
 }
 
 // ---------------- LEADERBOARD (PODIUM) ----------------
