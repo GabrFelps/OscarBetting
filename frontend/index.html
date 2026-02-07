@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bolão do Oscar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .selected-nominee {
+      border: 4px solid #fbbf24;
+      /* Amber-400 */
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+
+<body class="bg-gray-900 text-white font-sans antialiased">
+
+  <nav class="bg-gray-800 p-4 shadow-lg">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-yellow-500">🏆 Bolão do Oscar</h1>
+      <div id="user-info" class="hidden flex items-center gap-4">
+        <button onclick="showSection('voting-section')" class="hover:text-yellow-500">Apostar</button>
+        <button onclick="showSection('leaderboard-section')" class="hover:text-yellow-500">Classificação</button>
+        <span id="username-display" class="font-semibold border-l border-gray-600 pl-4"></span>
+        <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm">Sair</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mx-auto p-4 md:p-8">
+
+    <!-- Login Section -->
+    <div id="login-section" class="max-w-md mx-auto mt-10 bg-gray-800 p-8 rounded-lg shadow-xl">
+      <h2 class="text-2xl font-bold mb-6 text-center">Entrar no Bolão</h2>
+      <form id="login-form" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Usuário</label>
+          <input type="text" id="username"
+            class="w-full p-2 rounded bg-gray-700 border border-gray-600 focus:border-yellow-500 text-white" required>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Senha</label>
+          <input type="password" id="password"
+            class="w-full p-2 rounded bg-gray-700 border border-gray-600 focus:border-yellow-500 text-white" required>
+        </div>
+        <button type="submit"
+          class="w-full bg-yellow-600 hover:bg-yellow-700 font-bold py-2 rounded transition">Entrar</button>
+        <p id="login-error" class="text-red-500 text-sm mt-2 hidden">Erro ao entrar. Verifique suas credenciais.</p>
+      </form>
+    </div>
+
+    <!-- Leaderboard Section -->
+    <div id="leaderboard-section" class="hidden">
+      <h2 class="text-3xl font-bold mb-8 text-center text-yellow-500">🏆 Classificação</h2>
+      <div class="max-w-2xl mx-auto bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+        <table class="w-full text-left">
+          <thead class="bg-gray-700 text-yellow-500 uppercase text-sm">
+            <tr>
+              <th class="p-4">Posição</th>
+              <th class="p-4">Usuário</th>
+              <th class="p-4 text-right">Acertos</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-body" class="divide-y divide-gray-700">
+            <!-- Rows injected here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Voting Section -->
+    <div id="voting-section" class="hidden">
+      <h2 class="text-3xl font-bold mb-8 text-center">Faça suas apostas!</h2>
+      <div id="categories-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Categories will be injected here -->
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
