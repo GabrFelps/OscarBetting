@@ -6,24 +6,9 @@ class Command(BaseCommand):
     help = 'Populates the database with all 24 Oscar categories and nominees'
 
     def handle(self, *args, **options):
-        # ... (rest of the file) ...
-        
-        # Populate
-        for cat_name, nominees in data.items():
-            cat_slug = slugify(cat_name)
-            category, created = Category.objects.get_or_create(
-                slug=cat_slug, 
-                defaults={'name': cat_name}
-            )
-            
-            # If it existed but name is different (unlikely with slugify), update it? No, just ensure name matches if needed.
-            if created:
-                self.stdout.write(self.style.SUCCESS(f"Created category: {cat_name}"))
-            else:
-                self.stdout.write(f"Category already exists: {cat_name}")
-                if category.name != cat_name:
-                    category.name = cat_name
-                    category.save()
+        self.stdout.write("Starting safe seed (checking for missing data)...")
+
+        # Data Structure
         data = {
             "Melhor Filme": [
                 {"movie": "Bugonia"}, {"movie": "F1"}, {"movie": "Frankenstein"}, {"movie": "Hamnet"}, 
@@ -157,15 +142,12 @@ class Command(BaseCommand):
                 {"movie": "Pecadores"}
             ]
         }
-        # Safe Seed - Idempotent
-        self.stdout.write("Starting safe seed (checking for missing data)...")
-        # Category.objects.all().delete() # DANGEROUS IN PROD - REMOVED
-        
+
         # Populate
         for cat_name, nominees in data.items():
             cat_slug = slugify(cat_name)
             category, created = Category.objects.get_or_create(
-                slug=cat_slug,
+                slug=cat_slug, 
                 defaults={'name': cat_name, 'order': 0}
             )
             
@@ -199,5 +181,3 @@ class Command(BaseCommand):
                      self.stdout.write(f"  + Added nominee: {movie_title or person_name}")
         
         self.stdout.write(self.style.SUCCESS('Seed complete!'))
-        
-        self.stdout.write(self.style.SUCCESS('Successfully seeded 24 categories!'))
