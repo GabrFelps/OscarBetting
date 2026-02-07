@@ -303,12 +303,12 @@ function renderActiveCategory() {
   const votedId = globalUserBets[cat.id];
 
   let html = `
-        < div class="mb-8 text-center animate-fade-in" >
+        <div class="mb-8 text-center animate-fade-in">
             <h2 class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-yellow-500 to-yellow-200 mb-2 drop-shadow-sm tracking-tight">
                 ${cat.name}
             </h2>
             <p class="text-gray-400 text-xs uppercase tracking-widest font-semibold">Selecione o vencedor</p>
-        </div >
+        </div>
 
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 p-1">
           `;
