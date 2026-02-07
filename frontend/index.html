@@ -19,12 +19,29 @@
           },
           fontFamily: {
             sans: ['Inter', 'sans-serif'],
+            display: ['Playfair Display', 'serif'],
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-out',
+            'bounce-short': 'bounceShort 1s infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            bounceShort: {
+              '0%, 100%': { transform: 'translateY(-5%)', animationTimingFunction: 'cubic-bezier(0.8,0,1,1)' },
+              '50%': { transform: 'translateY(0)', animationTimingFunction: 'cubic-bezier(0,0,0.2,1)' },
+            }
           }
         }
       }
     }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap"
+    rel="stylesheet">
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
@@ -32,265 +49,341 @@
       font-family: 'Inter', sans-serif;
     }
 
-    .gold-glow {
-      box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
     }
 
-    .gold-border-glow {
-      box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-      border-color: #D4AF37;
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
 
     .glass {
-      background: rgba(30, 41, 59, 0.7);
-      backdrop-filter: blur(10px);
-    }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: #020617;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #334155;
-      border-radius: 4px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: #D4AF37;
+      background: rgba(2, 6, 23, 0.85);
+      backdrop-filter: blur(12px);
     }
   </style>
 </head>
 
-<body class="bg-slate-950 text-gray-100 min-h-screen flex flex-col">
+<body class="bg-slate-950 text-gray-100 min-h-screen flex flex-col selection:bg-gold selection:text-slate-900">
 
-  <!-- Navbar (Hidden on Login) -->
-  <nav id="navbar" class="hidden fixed top-0 w-full z-50 glass border-b border-white/10 transition-all duration-300">
-    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-      <div class="flex items-center gap-2 cursor-pointer" onclick="showSection('dashboard-screen')">
-        <i data-lucide="trophy" class="text-gold w-6 h-6"></i>
+  <!-- Navbar -->
+  <nav id="navbar" class="hidden fixed top-0 w-full z-50 glass border-b border-white/5 transition-all duration-300">
+    <div class="container mx-auto px-4 md:px-6 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-2 cursor-pointer group" onclick="showSection('dashboard-screen')">
+        <div class="relative">
+          <i data-lucide="trophy" class="text-gold w-6 h-6 group-hover:scale-110 transition duration-300"></i>
+          <div class="absolute inset-0 bg-gold blur-lg opacity-20"></div>
+        </div>
         <span class="text-xl font-bold tracking-wider text-white">OSCAR<span class="text-gold">BET</span></span>
       </div>
 
-      <div class="hidden md:flex items-center gap-8">
+      <div class="hidden md:flex items-center gap-1 bg-white/5 p-1 rounded-full border border-white/5">
         <button onclick="showSection('dashboard-screen')"
-          class="hover:text-gold transition text-sm font-medium">Dashboard</button>
+          class="px-4 py-1.5 rounded-full transition text-sm font-medium text-gray-300 hover:text-white">Dashboard</button>
         <button onclick="showSection('voting-screen')"
-          class="hover:text-gold transition text-sm font-medium">Apostar</button>
+          class="px-4 py-1.5 rounded-full transition text-sm font-medium text-gray-300 hover:text-white">Apostar</button>
         <button onclick="showSection('leaderboard-screen')"
-          class="hover:text-gold transition text-sm font-medium">Ranking</button>
-        <button id="admin-link" onclick="showSection('admin-screen')"
-          class="hidden hover:text-gold transition text-sm font-medium text-red-400">Admin</button>
+          class="px-4 py-1.5 rounded-full transition text-sm font-medium text-gray-300 hover:text-white">Ranking</button>
       </div>
 
       <div class="flex items-center gap-4">
-        <div class="text-right hidden sm:block">
+        <div class="text-right hidden sm:block leading-tight">
           <p id="nav-username" class="text-sm font-semibold text-white"></p>
-          <p class="text-xs text-gold">Cinéfilo</p>
+          <p class="text-[10px] uppercase tracking-widest text-gold font-bold">Membro</p>
         </div>
-        <button onclick="logout()" class="p-2 hover:bg-white/10 rounded-full transition" title="Sair">
-          <i data-lucide="log-out" class="w-5 h-5 text-gray-400 hover:text-red-500"></i>
+        <button id="admin-link" onclick="showSection('admin-screen')"
+          class="hidden text-red-500 hover:text-red-400 p-2">
+          <i data-lucide="lock" class="w-4 h-4"></i>
+        </button>
+        <button onclick="logout()" class="p-2 hover:bg-white/10 rounded-full transition group" title="Sair">
+          <i data-lucide="log-out" class="w-5 h-5 text-gray-400 group-hover:text-red-500 transition"></i>
         </button>
       </div>
     </div>
   </nav>
 
   <!-- Main Content -->
-  <!-- Added padding top to account for fixed navbar -->
-  <main class="flex-grow container mx-auto px-4 pt-24 pb-12 relative">
+  <main class="flex-grow container mx-auto px-4 pt-24 pb-20 relative">
 
     <!-- AUTH SCREEN -->
     <section id="auth-screen"
-      class="absolute inset-0 z-50 bg-slate-950 flex items-center justify-center min-h-screen p-4">
-      <div class="absolute inset-0 overflow-hidden">
-        <div class="absolute -top-1/2 -left-1/2 w-full h-full bg-gold/5 blur-[150px] rounded-full"></div>
-      </div>
+      class="fixed inset-0 z-[60] bg-[url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center flex items-center justify-center">
+      <div class="absolute inset-0 bg-slate-950/90 backdrop-blur-sm"></div>
 
       <div
-        class="w-full max-w-md bg-slate-900/80 border border-white/10 rounded-2xl shadow-2xl backdrop-blur-xl p-8 relative z-10">
+        class="w-full max-w-md bg-slate-900/40 border border-white/10 rounded-2xl shadow-2xl backdrop-blur-xl p-8 relative z-10 animate-fade-in">
         <div class="text-center mb-8">
-          <i data-lucide="trophy" class="w-12 h-12 text-gold mx-auto mb-4"></i>
-          <h1 class="text-3xl font-bold text-white mb-2">OSCAR<span class="text-gold">BET</span></h1>
-          <p class="text-gray-400 text-sm">Faça suas apostas nas estrelas.</p>
+          <div
+            class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gold/10 mb-4 ring-1 ring-gold/50">
+            <i data-lucide="trophy" class="w-8 h-8 text-gold"></i>
+          </div>
+          <h1 class="text-4xl font-bold text-white mb-2 font-display">OSCAR<span class="text-gold">BET</span></h1>
+          <p class="text-gray-400 text-sm tracking-wide">Faça suas apostas. Torne-se uma lenda.</p>
         </div>
 
-        <!-- Toggle Login/Register -->
-        <div class="flex bg-slate-800 rounded-lg p-1 mb-6">
+        <div class="flex bg-slate-950/50 rounded-lg p-1 mb-6 border border-white/5">
           <button onclick="toggleAuth('login')" id="tab-login"
-            class="flex-1 py-2 text-sm font-medium rounded-md bg-gold text-slate-900 shadow-lg transition-all">Entrar</button>
+            class="flex-1 py-2.5 text-sm font-medium rounded-md bg-gold text-slate-900 shadow-lg transition-all">Entrar</button>
           <button onclick="toggleAuth('register')" id="tab-register"
-            class="flex-1 py-2 text-sm font-medium rounded-md text-gray-400 hover:text-white transition-all">Cadastrar</button>
+            class="flex-1 py-2.5 text-sm font-medium rounded-md text-gray-400 hover:text-white transition-all">Cadastrar</button>
         </div>
 
-        <form id="auth-form" class="space-y-5">
+        <form id="auth-form" class="space-y-4">
           <div>
-            <label class="block text-xs font-bold text-gray-500 uppercase mb-1 ml-1">Usuário</label>
             <div class="relative">
-              <i data-lucide="user" class="absolute left-3 top-3 w-5 h-5 text-gray-500"></i>
+              <i data-lucide="user" class="absolute left-3 top-3.5 w-5 h-5 text-gray-500"></i>
               <input type="text" id="username"
-                class="w-full bg-slate-800 border-none rounded-lg py-3 pl-10 text-white focus:ring-2 focus:ring-gold focus:outline-none placeholder-gray-600"
-                placeholder="Seu nome de usuário" required>
+                class="w-full bg-slate-950/50 border border-white/10 rounded-lg py-3 pl-10 text-white focus:ring-1 focus:ring-gold focus:border-gold focus:outline-none transition placeholder-gray-600"
+                placeholder="Nome de usuário" required>
             </div>
           </div>
 
           <div id="email-group" class="hidden">
-            <label class="block text-xs font-bold text-gray-500 uppercase mb-1 ml-1">Email</label>
             <div class="relative">
-              <i data-lucide="mail" class="absolute left-3 top-3 w-5 h-5 text-gray-500"></i>
+              <i data-lucide="mail" class="absolute left-3 top-3.5 w-5 h-5 text-gray-500"></i>
               <input type="email" id="email"
-                class="w-full bg-slate-800 border-none rounded-lg py-3 pl-10 text-white focus:ring-2 focus:ring-gold focus:outline-none placeholder-gray-600"
+                class="w-full bg-slate-950/50 border border-white/10 rounded-lg py-3 pl-10 text-white focus:ring-1 focus:ring-gold focus:border-gold focus:outline-none transition placeholder-gray-600"
                 placeholder="seu@email.com">
             </div>
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-gray-500 uppercase mb-1 ml-1">Senha</label>
             <div class="relative">
-              <i data-lucide="lock" class="absolute left-3 top-3 w-5 h-5 text-gray-500"></i>
+              <i data-lucide="lock" class="absolute left-3 top-3.5 w-5 h-5 text-gray-500"></i>
               <input type="password" id="password"
-                class="w-full bg-slate-800 border-none rounded-lg py-3 pl-10 text-white focus:ring-2 focus:ring-gold focus:outline-none placeholder-gray-600"
-                placeholder="••••••••" required>
+                class="w-full bg-slate-950/50 border border-white/10 rounded-lg py-3 pl-10 text-white focus:ring-1 focus:ring-gold focus:border-gold focus:outline-none transition placeholder-gray-600"
+                placeholder="Senha" required>
             </div>
           </div>
 
           <button type="submit" id="submit-btn"
-            class="w-full bg-gold hover:bg-yellow-500 text-slate-900 font-bold py-3 rounded-lg shadow-lg shadow-gold/20 transition-all transform hover:scale-[1.02]">
+            class="w-full bg-gold hover:bg-yellow-400 text-slate-950 font-bold py-3.5 rounded-lg shadow-lg shadow-gold/20 transition-all transform active:scale-95 mt-2">
             ENTRAR
           </button>
 
-          <p id="auth-error" class="text-red-400 text-sm text-center hidden"></p>
+          <p id="auth-error"
+            class="text-red-400 text-sm text-center hidden bg-red-900/20 p-2 rounded border border-red-900/50"></p>
         </form>
       </div>
     </section>
 
     <!-- DASHBOARD SCREEN -->
-    <section id="dashboard-screen" class="hidden space-y-8 animate-fade-in">
-      <!-- Hero Banner -->
-      <div
-        class="relative rounded-2xl overflow-hidden bg-gradient-to-r from-slate-900 to-slate-800 border border-white/5 shadow-2xl">
+    <section id="dashboard-screen" class="hidden space-y-12 animate-fade-in max-w-6xl mx-auto">
+      <!-- Hero -->
+      <div class="relative rounded-3xl overflow-hidden shadow-2xl border border-white/10 group">
         <div
-          class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1600&auto=format&fit=crop')] bg-cover bg-center opacity-20">
+          class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1578269174936-2709b6aeb913?q=80&w=1600')] bg-cover bg-center transition duration-1000 group-hover:scale-105">
         </div>
-        <div class="relative p-8 md:p-12 z-10">
-          <span
-            class="inline-block px-3 py-1 bg-gold/20 text-gold text-xs font-bold rounded-full mb-4 border border-gold/30">TEMPORADA
-            2026</span>
-          <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Faça suas apostas!<br>O Oscar é dia <span
-              class="text-gold">10 de Março</span>.</h2>
-          <p class="text-gray-300 max-w-lg mb-8 text-lg">A cerimônia mais aguardada do ano está chegando. Prepare seus
-            palpites, desafie seus amigos e concorra a prêmios exclusivos.</p>
+        <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/80 to-transparent"></div>
+
+        <div class="relative p-10 md:p-16 max-w-2xl">
+          <div
+            class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold/10 border border-gold/30 text-gold text-xs font-bold uppercase tracking-wider mb-6">
+            <span class="w-2 h-2 rounded-full bg-gold animate-pulse"></span>
+            Ao Vivo
+          </div>
+          <h2 class="text-5xl md:text-7xl font-bold text-white mb-6 font-display leading-tight">
+            Oscar <span class="text-transparent bg-clip-text bg-gradient-to-r from-gold to-yellow-200">2026</span>
+          </h2>
+          <p class="text-gray-300 text-lg mb-10 leading-relaxed border-l-2 border-gold/50 pl-6">
+            A corrida pelo ouro começou. Faça suas previsões, suba no ranking global e prove que você é o maior cinéfilo
+            de todos os tempos.
+          </p>
           <div class="flex flex-wrap gap-4">
             <button onclick="showSection('voting-screen')"
-              class="px-8 py-3 bg-gold text-slate-950 font-bold rounded-lg hover:bg-yellow-400 transition shadow-lg shadow-gold/20 flex items-center gap-2">
-              <i data-lucide="play-circle" class="w-5 h-5"></i> Começar Agora
+              class="px-8 py-4 bg-gold text-slate-950 font-bold rounded-xl hover:bg-yellow-400 transition transform hover:-translate-y-1 shadow-lg shadow-gold/20 flex items-center gap-2">
+              <i data-lucide="play" class="w-5 h-5 fill-current"></i> Fazer Apostas
+            </button>
+            <button onclick="showSection('leaderboard-screen')"
+              class="px-8 py-4 bg-white/5 text-white font-bold rounded-xl hover:bg-white/10 transition border border-white/10 flex items-center gap-2">
+              Ver Ranking
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Quick Access Grid -->
+      <!-- Features -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div onclick="showSection('voting-screen')"
-          class="bg-slate-800/50 p-6 rounded-xl border border-white/5 hover:border-gold/50 transition cursor-pointer group">
+          class="bg-slate-900/50 p-8 rounded-2xl border border-white/5 hover:border-gold/30 hover:bg-slate-800/50 transition cursor-pointer group">
           <div
-            class="w-12 h-12 bg-gold/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-gold/20 transition">
-            <i data-lucide="ticket" class="text-gold w-6 h-6"></i>
+            class="w-14 h-14 rounded-xl bg-slate-800 flex items-center justify-center mb-6 group-hover:scale-110 transition duration-500 border border-white/5 group-hover:border-gold/30">
+            <i data-lucide="clapperboard" class="text-gold w-7 h-7"></i>
           </div>
-          <h3 class="text-xl font-bold text-white mb-2">Apostar Agora</h3>
-          <p class="text-gray-400 text-sm">Preencha sua cartela completa antes que o tempo acabe.</p>
+          <h3 class="text-xl font-bold text-white mb-3">Votação Interativa</h3>
+          <p class="text-gray-400 leading-relaxed">Navegue pelas 24 categorias com uma interface imersiva e responsiva.
+          </p>
         </div>
 
         <div onclick="showSection('leaderboard-screen')"
-          class="bg-slate-800/50 p-6 rounded-xl border border-white/5 hover:border-gold/50 transition cursor-pointer group">
+          class="bg-slate-900/50 p-8 rounded-2xl border border-white/5 hover:border-purple-500/30 hover:bg-slate-800/50 transition cursor-pointer group">
           <div
-            class="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-purple-500/20 transition">
-            <i data-lucide="bar-chart-2" class="text-purple-400 w-6 h-6"></i>
+            class="w-14 h-14 rounded-xl bg-slate-800 flex items-center justify-center mb-6 group-hover:scale-110 transition duration-500 border border-white/5 group-hover:border-purple-500/30">
+            <i data-lucide="crown" class="text-purple-400 w-7 h-7"></i>
           </div>
-          <h3 class="text-xl font-bold text-white mb-2">Ranking Global</h3>
-          <p class="text-gray-400 text-sm">Veja sua posição e compare sua pontuação.</p>
+          <h3 class="text-xl font-bold text-white mb-3">Ranking em Tempo Real</h3>
+          <p class="text-gray-400 leading-relaxed">Acompanhe sua pontuação e dispute o topo do pódio com a comunidade.
+          </p>
         </div>
 
-        <div class="bg-slate-800/50 p-6 rounded-xl border border-white/5 cursor-default opacity-75">
-          <div class="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center mb-4">
-            <i data-lucide="users" class="text-blue-400 w-6 h-6"></i>
+        <div class="bg-slate-900/50 p-8 rounded-2xl border border-white/5 opacity-60">
+          <div class="w-14 h-14 rounded-xl bg-slate-800 flex items-center justify-center mb-6 border border-white/5">
+            <i data-lucide="users-2" class="text-blue-400 w-7 h-7"></i>
           </div>
-          <h3 class="text-xl font-bold text-white mb-2">Ligas Privadas</h3>
-          <p class="text-gray-400 text-sm">Em breve: Crie ligas com seus amigos.</p>
+          <h3 class="text-xl font-bold text-white mb-3">Grupos (Em Breve)</h3>
+          <p class="text-gray-400 leading-relaxed">Crie bolões privados para competir apenas com seus amigos.</p>
         </div>
       </div>
     </section>
 
-    <!-- VOTING SCREEN -->
-    <section id="voting-screen" class="hidden space-y-8 animate-fade-in">
-      <div class="flex flex-col md:flex-row justify-between items-center mb-8">
-        <div>
-          <h2 class="text-3xl font-bold text-white"><span class="text-gold">Sua</span> Cartela</h2>
-          <p class="text-gray-400 text-sm mt-1">Selecione um indicado por categoria. Salvo automaticamente.</p>
+    <!-- VOTING SCREEN (REBUILT FOR TABS) -->
+    <section id="voting-screen" class="hidden animate-fade-in max-w-7xl mx-auto">
+
+      <!-- Sticky Header & Tabs -->
+      <div
+        class="sticky top-[72px] z-30 bg-slate-950/95 backdrop-blur-md pt-4 pb-4 -mx-4 px-4 md:mx-0 md:px-0 border-b border-white/5 mb-8">
+        <div class="flex justify-between items-center mb-4">
+          <div class="hidden md:block">
+            <h2 class="text-2xl font-bold text-white font-display">Apostas</h2>
+          </div>
+          <div
+            class="flex items-center gap-4 bg-slate-900/80 px-4 py-2 rounded-lg border border-white/10 ml-auto md:ml-0">
+            <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Progresso</span>
+            <div class="h-4 w-px bg-white/10"></div>
+            <span id="vote-progress" class="text-gold font-mono font-bold text-lg">0/24</span>
+          </div>
         </div>
-        <div class="bg-slate-800 px-4 py-2 rounded-lg border border-white/10 mt-4 md:mt-0">
-          <span class="text-gray-400 text-sm">Progresso:</span>
-          <span id="vote-progress" class="text-gold font-bold ml-2">0/24</span>
+
+        <!-- Scrollable Tabs -->
+        <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar mask-linear-fade" id="category-tabs">
+          <!-- JS injects buttons here -->
         </div>
       </div>
 
-      <div id="categories-container" class="space-y-12">
-        <!-- Categories injected here -->
+      <!-- Active Content -->
+      <div id="active-category-container" class="min-h-[60vh] pb-12">
+        <!-- JS injects nominees grid here -->
+      </div>
+
+      <!-- Nav Controls -->
+      <div class="fixed bottom-6 left-0 right-0 flex justify-center gap-4 z-40 pointer-events-none">
+        <button onclick="prevCategory()" id="btn-prev-cat"
+          class="pointer-events-auto shadow-2xl bg-slate-800 hover:bg-slate-700 text-white p-4 rounded-full border border-white/10 transition disabled:opacity-0 disabled:translate-y-10">
+          <i data-lucide="arrow-left" class="w-6 h-6"></i>
+        </button>
+        <div
+          class="pointer-events-auto bg-slate-900/90 backdrop-blur text-white px-6 py-4 rounded-full border border-white/10 font-mono shadow-2xl flex items-center min-w-[100px] justify-center"
+          id="category-counter">
+          1 / 24
+        </div>
+        <button onclick="nextCategory()" id="btn-next-cat"
+          class="pointer-events-auto shadow-2xl bg-gold hover:bg-yellow-400 text-slate-950 p-4 rounded-full border border-gold/50 transition disabled:opacity-0 disabled:translate-y-10 transform hover:scale-110">
+          <i data-lucide="arrow-right" class="w-6 h-6"></i>
+        </button>
       </div>
     </section>
 
-    <!-- LEADERBOARD SCREEN -->
-    <section id="leaderboard-screen" class="hidden space-y-8 animate-fade-in">
-      <div class="text-center mb-10">
-        <span class="text-gold text-sm font-bold tracking-widest uppercase">Official Pool</span>
-        <h2 class="text-4xl font-bold text-white mt-1">Ranking 2026</h2>
+    <!-- LEADERBOARD SCREEN (PODIUM) -->
+    <section id="leaderboard-screen" class="hidden animate-fade-in max-w-5xl mx-auto space-y-12">
+      <div class="text-center">
+        <h2 class="text-4xl md:text-5xl font-bold text-white font-display mb-2">Ranking Global</h2>
+        <p class="text-gray-400">Os maiores especialistas da temporada.</p>
       </div>
 
-      <div class="grid grid-cols-1 gap-6 max-w-4xl mx-auto">
-        <div class="bg-slate-900 rounded-2xl border border-white/10 overflow-hidden shadow-2xl">
-          <table class="w-full text-left">
-            <thead class="bg-slate-800 text-gray-400 uppercase text-xs font-bold tracking-wider">
-              <tr>
-                <th class="p-6">Posição</th>
-                <th class="p-6">Usuário</th>
-                <th class="p-6 text-right">Pontos</th>
-              </tr>
-            </thead>
-            <tbody id="leaderboard-body" class="divide-y divide-white/5">
-              <!-- Rows -->
-            </tbody>
-          </table>
+      <!-- Podium Container -->
+      <div id="podium-container" class="hidden relative h-80 flex justify-center items-end gap-4 md:gap-8 mb-16 pt-12">
+        <!-- 2nd Place -->
+        <div class="flex flex-col items-center w-28 md:w-40 relative z-10 order-1">
+          <div
+            class="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-slate-300 bg-slate-800 flex items-center justify-center text-2xl font-bold text-slate-300 shadow-2xl mb-3 relative">
+            <span id="podium-2-avatar">B</span>
+            <div class="absolute -bottom-3 bg-slate-300 text-slate-900 text-xs font-bold px-2 py-0.5 rounded shadow-lg">
+              2º LUGAR</div>
+          </div>
+          <div class="text-center mb-2 w-full">
+            <h3 class="font-bold text-white truncate text-sm md:text-base" id="podium-2-name">User</h3>
+            <p class="text-xs text-slate-400 font-mono" id="podium-2-score">0 pts</p>
+          </div>
+          <div
+            class="w-full bg-gradient-to-t from-slate-800 to-slate-700/50 h-32 rounded-t-xl border-t border-slate-600/30">
+          </div>
         </div>
+
+        <!-- 1st Place -->
+        <div class="flex flex-col items-center w-32 md:w-48 relative z-20 order-2 -mt-12">
+          <i data-lucide="crown" class="w-8 h-8 text-gold mb-2 animate-bounce-short"></i>
+          <div
+            class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-gold bg-slate-800 flex items-center justify-center text-4xl font-bold text-gold shadow-[0_0_30px_rgba(212,175,55,0.3)] mb-4 relative">
+            <span id="podium-1-avatar">A</span>
+            <div class="absolute -bottom-3 bg-gold text-slate-950 text-xs font-bold px-4 py-1 rounded shadow-lg">CAMPEÃO
+            </div>
+          </div>
+          <div class="text-center mb-2 w-full">
+            <h3 class="font-bold text-gold text-lg md:text-xl truncate" id="podium-1-name">Champion</h3>
+            <p class="text-sm text-yellow-200/60 font-mono" id="podium-1-score">0 pts</p>
+          </div>
+          <div
+            class="w-full bg-gradient-to-t from-yellow-900/40 to-yellow-600/20 h-44 rounded-t-xl border-t border-gold/30 backdrop-blur-sm">
+          </div>
+        </div>
+
+        <!-- 3rd Place -->
+        <div class="flex flex-col items-center w-28 md:w-40 relative z-10 order-3">
+          <div
+            class="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-amber-700 bg-slate-800 flex items-center justify-center text-2xl font-bold text-amber-700 shadow-2xl mb-3 relative">
+            <span id="podium-3-avatar">C</span>
+            <div class="absolute -bottom-3 bg-amber-700 text-white text-xs font-bold px-2 py-0.5 rounded shadow-lg">3º
+              LUGAR</div>
+          </div>
+          <div class="text-center mb-2 w-full">
+            <h3 class="font-bold text-white truncate text-sm md:text-base" id="podium-3-name">User</h3>
+            <p class="text-xs text-amber-500/60 font-mono" id="podium-3-score">0 pts</p>
+          </div>
+          <div
+            class="w-full bg-gradient-to-t from-slate-800 to-amber-900/20 h-24 rounded-t-xl border-t border-amber-800/30">
+          </div>
+        </div>
+      </div>
+
+      <!-- List -->
+      <div class="bg-slate-900/50 rounded-2xl border border-white/5 overflow-hidden backdrop-blur-sm">
+        <table class="w-full text-left">
+          <thead class="bg-white/5 text-gray-500 uppercase text-xs font-bold tracking-wider">
+            <tr>
+              <th class="p-4 md:p-6 w-20 text-center">#</th>
+              <th class="p-4 md:p-6">Membro</th>
+              <th class="p-4 md:p-6 text-right">Pontos</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-body" class="divide-y divide-white/5 text-sm md:text-base">
+            <!-- JS injects rows -->
+          </tbody>
+        </table>
       </div>
     </section>
 
     <!-- ADMIN SCREEN -->
-    <section id="admin-screen" class="hidden space-y-8 animate-fade-in">
+    <section id="admin-screen" class="hidden animate-fade-in max-w-4xl mx-auto">
       <div class="bg-slate-900 border border-red-900/30 p-8 rounded-2xl">
         <h2 class="text-2xl font-bold text-red-500 mb-6 flex items-center gap-2">
-          <i data-lucide="lock" class="w-6 h-6"></i> Área Administrativa
+          <i data-lucide="shield-alert" class="w-6 h-6"></i> Controle da Academia
         </h2>
-        <p class="text-gray-400 mb-8">Defina os vencedores oficiais. Essa ação atualiza o Ranking imediatamente.</p>
-
         <div id="admin-categories-container" class="space-y-4">
-          <!-- Admin inputs injected here -->
+          <!-- Admin Content -->
         </div>
       </div>
     </section>
 
   </main>
 
-  <footer class="bg-slate-900 py-8 text-center text-gray-500 text-sm border-t border-white/5 mt-auto">
-    <p>&copy; 2026 OscarBet. Not affiliated with the Academy.</p>
+  <!-- Footer -->
+  <footer class="bg-slate-950/50 py-12 text-center text-gray-600 text-sm border-t border-white/5">
+    <p>&copy; 2026 OscarBet. Developed for AI Challenge.</p>
   </footer>
 
   <script src="app.js"></script>
-  <script>
-    lucide.createIcons();
-  </script>
+  <script>lucide.createIcons();</script>
 </body>
 
 </html>
